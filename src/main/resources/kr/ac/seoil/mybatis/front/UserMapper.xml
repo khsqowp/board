@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.ac.seoil.mapper.UserMapper">
+
+    <select id="getUserByIdAndPw" resultType="kr.ac.seoil.vo.UserVO">
+        SELECT
+            SEQ_USER as seqUser,
+            USER_ID as userId,
+            USER_NM as userNm,
+            USER_PW as userPw,
+            USER_YN as useYn,
+            REG_DT as regDt,
+            MOD_DT as modDt,
+            MOD_ID as modId
+        FROM TBL_USERS
+        WHERE USER_ID = #{userId}
+          AND USER_PW = #{userPw}
+    </select>
+
+    <insert id="insertUser" parameterType="kr.ac.seoil.vo.UserVO">
+        <selectKey keyProperty="seqUser" order="BEFORE" resultType="long">
+            SELECT SEQ_USERS.NEXTVAL FROM DUAL
+        </selectKey>
+        INSERT INTO TBL_USERS (
+        SEQ_USER,
+        USER_ID,
+        USER_NM,
+        USER_PW,
+        USER_YN,
+        REG_DT,
+        MOD_DT,
+        MOD_ID
+        ) VALUES (
+        #{seqUser},
+        #{userId},
+        #{userNm},
+        #{userPw},
+        #{useYn},
+        #{regDt},
+        #{modDt},
+        #{modId}
+        )
+    </insert>
+
+    <insert id="insertUserWithoutSeq" parameterType="kr.ac.seoil.vo.UserVO">
+        INSERT INTO TBL_USERS (
+            SEQ_USER,
+            USER_ID,
+            USER_NM,
+            USER_PW,
+            USER_YN,
+            REG_DT,
+            MOD_DT,
+            MOD_ID
+        ) VALUES (
+        SEQ_USERS.NEXTVAL,
+        #{userId},
+        #{userNm},
+        #{userPw},
+        #{useYn},
+        #{regDt},
+        #{modDt},
+        #{modId}
+                 )
+    </insert>
+
+    <update id="updateUserNmYn">
+        UPDATE TBL_USERS SET
+            USER_NM = #{userNm}
+            , USER_YN = #{useYn}
+            , MOD_DT = SYSDATE
+        WHERE USER_ID = #{userId}
+          AND USER_PW = #{userPw}
+    </update>
+
+    <delete id="deleteUser">
+        DELETE FROM TBL_USERS
+        WHERE USER_ID = #{userId}
+    </delete>
+
+</mapper>
